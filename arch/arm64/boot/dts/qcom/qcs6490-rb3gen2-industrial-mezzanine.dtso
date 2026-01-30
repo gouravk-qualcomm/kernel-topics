@@ -36,6 +36,7 @@
        status = "disabled";
 
 };
+
 / {
 
 	hdmi-connector {
