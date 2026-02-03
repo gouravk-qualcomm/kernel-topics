@@ -1097,7 +1097,6 @@
 		bias-pull-up;
 	};
 
-
 	sd_cd: sd-cd-state {
 		pins = "gpio91";
 		function = "gpio";
