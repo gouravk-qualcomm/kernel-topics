@@ -300,7 +300,7 @@
 		vddio2-supply = <&vdd_ntn_1p8>;
 		vddio18-supply = <&vdd_ntn_1p8>;
 
-		i2c-parent = <&i2c1 0x77>;
+		i2c-parent = <&i2c1 0x33>;
 
 		resx-gpios = <&tlmm 124 GPIO_ACTIVE_LOW>;
 
@@ -368,9 +368,11 @@
 	pcie1_tc9563_resx_n: pcie1-tc9563-resx-state {
 		pins = "gpio124";
 		function = "gpio";
+
 		bias-disable;
 		input-disable;
 		output-enable;
+		power-source = <0>;
 	};
 
 };
