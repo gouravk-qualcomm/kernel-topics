@@ -54,15 +54,6 @@
 		};
 	};
 
-	/* Should be moved in a proper pcie-m2-e-connector */
-	rfkill-bluetooth {
-		compatible = "rfkill-gpio";
-		label = "m.2 BT";
-		radio-type = "bluetooth";
-		/* rfkill-gpio inverts internally */
-		shutdown-gpios = <&tlmm 55 GPIO_ACTIVE_HIGH>;
-	};
-
 	sound {
 		compatible = "qcom,qcs8275-sndcard";
 		model = "arduino-monza";
@@ -527,6 +518,20 @@
 
 &uart7 {
 	status = "okay";
+};
+
+&uart10 {
+	status = "okay";
+
+	bluetooth: bluetooth {
+		compatible = "qcom,qca2066-bt";
+		max-speed = <3200000>;
+		enable-gpios = <&tlmm 55 GPIO_ACTIVE_HIGH>;
+
+		/* should be linked to pcie-m2-e-connector (when available upstream) */
+
+		status = "disabled";
+	};
 };
 
 &usb_1_ep {
