@@ -595,24 +595,6 @@
 };
 
 /* Camera TODO: Move to overlay */
-&{/} {
-	cam_pwr_csi0: cam-pwr-csi0 {
-		compatible = "regulator-fixed";
-		regulator-name = "cam-pwr";
-		startup-delay-us = <100000>;
-		gpio = <&pca9555 1 GPIO_ACTIVE_HIGH>;
-		enable-active-high;
-	};
-};
-
-&tlmm {
-	mux-csi0-media-carrier {
-		gpio-hog;
-		gpios = <24 0>;
-		output-low;
-	};
-};
-
 &clocks {
         cam24m: cam-clk {
                 compatible = "fixed-clock";
@@ -620,6 +602,18 @@
                 clock-frequency = <24000000>;
                 clock-output-names = "cam24m";
         };
+};
+
+/* Select CAMERA here */
+#define MONZA_FLAT0
+#undef MONZA_FLAT1
+#undef MONZA_FLAT2
+#undef MONZA_JMEDIA
+/**/
+
+#ifdef MONZA_JMEDIA
+&cci0 {
+	status = "okay";
 };
 
 &camss {
@@ -644,8 +638,22 @@
 
 };
 
-&cci0 {
-	status = "okay";
+&{/} {
+	cam_pwr_csi0: cam-pwr-csi0 {
+		compatible = "regulator-fixed";
+		regulator-name = "cam-pwr";
+		startup-delay-us = <100000>;
+		gpio = <&pca9555 1 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+	};
+};
+
+&tlmm {
+	mux-csi0-media-carrier {
+		gpio-hog;
+		gpios = <24 0>;
+		output-low;
+	};
 };
 
 &cci0_i2c0 {
@@ -682,4 +690,137 @@
 		};
 	};
 };
+#else
+#ifdef MONZA_FLAT0
+&cci0 {
+	status = "okay";
+};
+
+&cci0_i2c0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	sensor@10 {
+		compatible = "sony,imx219";
+		reg = <0x10>;
+		clocks = <&cam24m>;
+		status = "okay";
+
+		reset-gpios = <&tlmm 64 GPIO_ACTIVE_HIGH>;
+
+		port {
+			/* MIPI CSI-2 bus endpoint */
+			imx219_0_ep: endpoint {
+				remote-endpoint = <&csiphy0_ep>;
+				clock-lanes = <0>;
+				data-lanes = <1 2>;
+				link-frequencies = /bits/ 64 <456000000>;
+			};
+		};
+	};
+};
+#endif
+#ifdef MONZA_FLAT1
+&cci1 {
+	status = "okay";
+};
+
+&cci1_i2c0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	sensor@10 {
+		compatible = "sony,imx219";
+		reg = <0x10>;
+		clocks = <&cam24m>;
+		status = "okay";
+
+		reset-gpios = <&tlmm 75 GPIO_ACTIVE_HIGH>;
+
+		port {
+			/* MIPI CSI-2 bus endpoint */
+			imx219_1_ep: endpoint {
+				remote-endpoint = <&csiphy1_ep>;
+				clock-lanes = <0>;
+				data-lanes = <1 2>;
+				link-frequencies = /bits/ 64 <456000000>;
+			};
+		};
+	};
+};
+#endif
+#ifdef MONZA_FLAT2
+&cci2 {
+	status = "okay";
+};
+
+&cci2_i2c0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	sensor@10 {
+		compatible = "sony,imx219";
+		reg = <0x10>;
+		clocks = <&cam24m>;
+		status = "okay";
+
+		reset-gpios = <&tlmm 82 GPIO_ACTIVE_HIGH>;
+
+		port {
+			/* MIPI CSI-2 bus endpoint */
+			imx219_2_ep: endpoint {
+				remote-endpoint = <&csiphy2_ep>;
+				clock-lanes = <0>;
+				data-lanes = <1 2>;
+				link-frequencies = /bits/ 64 <456000000>;
+			};
+		};
+	};
+};
+#endif
+
+&camss {
+	vdda-phy-supply = <&vreg_l4a>;
+	vdda-pll-supply = <&vreg_l5a>;
+
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+#ifdef MONZA_FLAT0
+		port@0 {
+			reg = <0>;
+
+			csiphy0_ep: endpoint {
+				data-lanes = <0 1>;
+				remote-endpoint = <&imx219_0_ep>;
+			};
+		};
+#endif
+#ifdef MONZA_FLAT1
+		port@1 {
+			reg = <1>;
+
+			csiphy1_ep: endpoint {
+				data-lanes = <0 1>;
+				remote-endpoint = <&imx219_1_ep>;
+			};
+		};
+#endif
+#ifdef MONZA_FLAT2
+		port@2 {
+			reg = <2>;
+
+			csiphy2_ep: endpoint {
+				data-lanes = <0 1>;
+				remote-endpoint = <&imx219_2_ep>;
+			};
+		};
+#endif
+	};
+
+};
+#endif
 
