@@ -1034,6 +1034,7 @@
 					reg = <2>;
 
 					usb_dp_qmpphy_dp_in: endpoint {
+						remote-endpoint = <&mdss_dp0_out>;
 					};
 				};
 			};
@@ -1471,20 +1472,17 @@
 					      "stream_pixel",
 					      "stream_1_pixel";
 
-				/* TODO:
 				assigned-clocks = <&dispcc DISP_CC_MDSS_DPTX0_LINK_CLK_SRC>,
 						  <&dispcc DISP_CC_MDSS_DPTX0_PIXEL0_CLK_SRC>,
 						  <&dispcc DISP_CC_MDSS_DPTX0_PIXEL1_CLK_SRC>;
 				assigned-clock-parents = <&usb_dp_qmpphy QMP_USB43DP_DP_LINK_CLK>,
 							 <&usb_dp_qmpphy QMP_USB43DP_DP_VCO_DIV_CLK>,
 							 <&usb_dp_qmpphy QMP_USB43DP_DP_VCO_DIV_CLK>;
-				*/
 
 				operating-points-v2 = <&dp_opp_table>;
 
-				// TODO
-				//phys = <&usb_dp_qmpphy QMP_USB43DP_DP_PHY>;
-				//phy-names = "dp";
+				phys = <&usb_dp_qmpphy QMP_USB43DP_DP_PHY>;
+				phy-names = "dp";
 
 				#sound-dai-cells = <0>;
 
@@ -1492,11 +1490,6 @@
 
 				dp_opp_table: opp-table {
 					compatible = "operating-points-v2";
-
-					opp-192000000 {
-						opp-hz = /bits/ 64 <192000000>;
-						required-opps = <&rpmhpd_opp_low_svs_d1>;
-					};
 
 					opp-270000000 {
 						opp-hz = /bits/ 64 <270000000>;
@@ -1531,7 +1524,7 @@
 
 						mdss_dp0_out: endpoint {
 							data-lanes = <0 1 2 3>;
-							// remote-endpoint = <&usb_dp_qmpphy_dp_in>;
+							remote-endpoint = <&usb_dp_qmpphy_dp_in>;
 						};
 					};
 				};
