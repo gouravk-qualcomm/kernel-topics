@@ -675,6 +675,8 @@
 				 <&ufs_mem_phy 2>,
 				 <0>;
 
+			power-domains = <&rpmhpd RPMHPD_CX>;
+
 			#clock-cells = <1>;
 			#reset-cells = <1>;
 			#power-domain-cells = <1>;
@@ -1989,7 +1991,7 @@
 				status = "disabled";
 			};
 
-			i2c16: i2c@198c000  {
+			i2c16: i2c@198c000 {
 				compatible = "qcom,geni-i2c";
 				reg = <0x0 0x0198c000 0x0 0x4000>;
 				interrupts = <GIC_SPI 585 IRQ_TYPE_LEVEL_HIGH>;
@@ -5529,11 +5531,11 @@
 			};
 
 			qup_uart7_default: qup-uart7-state {
-				 /* TX, RX */
-				 pins = "gpio62", "gpio63";
-				 function = "qup1_se7";
-				 drive-strength = <2>;
-				 bias-disable;
+				/* TX, RX */
+				pins = "gpio62", "gpio63";
+				function = "qup1_se7";
+				drive-strength = <2>;
+				bias-disable;
 			};
 
 			qup_uart18_default: qup-uart18-default-state {
